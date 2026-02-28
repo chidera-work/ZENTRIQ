@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
     { name: 'Home', path: '/', icon: 'fa-house-chimney' },
     { name: 'Services', path: '/services', icon: 'fa-layer-group' },
     { name: 'About', path: '/about', icon: 'fa-shield-halved' },
-    { name: 'Trucking', path: '/trucking', icon: 'fa-truck-shield' },
+    { name: 'Trucking', path: '/trucking', icon: 'fa-truck-fast' },
     { name: 'FAQ', path: '/faq', icon: 'fa-circle-question' },
     { name: 'Contact', path: '/contact', icon: 'fa-envelope' },
   ];
