@@ -20,7 +20,6 @@
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.13.0",
     "resend": "^6.9.2",
-    "serverless-http": "^4.0.0",
     "tsx": "^4.21.0"
   },
   "devDependencies": {
