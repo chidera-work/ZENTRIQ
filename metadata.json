@@ -1,0 +1,7 @@
+{
+  "name": "ZENTRIQ LOGISTICS - High-Value Logistics",
+  "description": "Elite secure logistics and asset protection specializing in high-frequency supply nexus protocols and real-time intelligence.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
