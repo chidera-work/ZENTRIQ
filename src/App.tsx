@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -63,7 +63,12 @@ const App: React.FC = () => {
         // 2. Fallback to LocalStorage if DB is empty or fails
         const local = localStorage.getItem(STORAGE_KEY);
         if (local) {
-          finalShipments = JSON.parse(local);
+          try {
+            finalShipments = JSON.parse(local);
+          } catch (e) {
+            console.warn("Corrupt local storage", e);
+            finalShipments = INITIAL_SHIPMENTS;
+          }
         } else {
           // 3. Last resort: Initial Constants
           finalShipments = INITIAL_SHIPMENTS;
@@ -72,7 +77,15 @@ const App: React.FC = () => {
     } catch (e) {
       console.warn("Sync Error: Falling back to LocalStorage/Defaults", e);
       const local = localStorage.getItem(STORAGE_KEY);
-      finalShipments = local ? JSON.parse(local) : INITIAL_SHIPMENTS;
+      if (local) {
+        try {
+          finalShipments = JSON.parse(local);
+        } catch (err) {
+          finalShipments = INITIAL_SHIPMENTS;
+        }
+      } else {
+        finalShipments = INITIAL_SHIPMENTS;
+      }
     }
 
     setShipments(finalShipments);

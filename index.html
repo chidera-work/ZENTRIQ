@@ -4,143 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZENTRIQ LOGISTICS | Elite Security & Logistics</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              navy: {
-                DEFAULT: 'var(--navy-default)',
-                dark: 'var(--navy-dark)',
-                panel: 'var(--navy-panel)',
-                accent: 'var(--navy-accent)'
-              },
-              main: 'var(--text-main)',
-              muted: 'var(--text-muted)',
-              apexRed: {
-                DEFAULT: '#A61A1A',
-                glow: 'var(--apex-glow)'
-              },
-              neonRed: {
-                DEFAULT: '#FF0033',
-                glow: 'var(--neon-glow)'
-              }
-            },
-            boxShadow: {
-              'premium-glow': '0 0 40px -10px var(--apex-glow)',
-              'elevated-dark': '0 35px 70px -15px rgba(0, 0, 0, 0.8)',
-              'elevated-light': '0 20px 50px -12px rgba(0, 0, 0, 0.1)',
-              'apex': '0 0 30px var(--apex-glow)',
-              'hud': 'inset 0 0 20px rgba(166, 26, 26, 0.1)'
-            },
-            fontFamily: {
-              sans: ['Open Sans', 'sans-serif'],
-              heading: ['Poppins', 'sans-serif']
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'float': 'float 6s ease-in-out infinite',
-              'scan': 'scan 3s linear infinite',
-            },
-            transitionTimingFunction: {
-              'expo': 'cubic-bezier(0.22, 1, 0.36, 1)',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      :root {
-        --expo-out: cubic-bezier(0.22, 1, 0.36, 1);
-        --navy-dark: #F8FAFC;
-        --navy-default: #F1F5F9;
-        --navy-panel: #FFFFFF;
-        --navy-accent: #E2E8F0;
-        --text-main: #020617;
-        --text-muted: #475569;
-        --glass-bg: rgba(255, 255, 255, 0.75);
-        --grid-color: rgba(15, 23, 42, 0.04);
-        --apex-glow: rgba(166, 26, 26, 0.1);
-        --neon-glow: rgba(255, 0, 51, 0.1);
-      }
-      .dark {
-        --navy-dark: #020617;
-        --navy-default: #0F172A;
-        --navy-panel: #1E293B;
-        --navy-accent: #172554;
-        --text-main: #F1F5F9;
-        --text-muted: #94A3B8;
-        --glass-bg: rgba(15, 23, 42, 0.7);
-        --grid-color: rgba(255, 255, 255, 0.03);
-        --apex-glow: rgba(166, 26, 26, 0.4);
-        --neon-glow: rgba(255, 0, 51, 0.4);
-      }
-      body {
-        background-color: var(--navy-dark);
-        color: var(--text-main);
-        overflow-x: hidden;
-        top: 0px !important; 
-        transition: background-color 0.5s ease, color 0.5s ease;
-      }
-      .bg-grid {
-        background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
-                          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-        background-size: 40px 40px;
-      }
-      .glass {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-      }
-      .dark .glass {
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .text-gradient {
-        background: linear-gradient(to bottom right, var(--text-main) 30%, var(--text-muted));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      
-      /* Responsive Typography */
-      @media (max-width: 640px) {
-        h1 { font-size: 2.5rem !important; }
-        h2 { font-size: 2rem !important; }
-      }
-
-      @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-      }
-      @keyframes scan {
-        0% { transform: translateY(-100%); opacity: 0; }
-        50% { opacity: 0.5; }
-        100% { transform: translateY(100%); opacity: 0; }
-      }
-      @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(200%); }
-      }
-      
-      /* Hide Google Translate completely */
-      #google_translate_element, .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-gadget, .goog-te-gadget-icon {
-        display: none !important;
-        visibility: hidden !important;
-      }
-      body { top: 0px !important; }
-      .goog-tooltip { display: none !important; }
-      .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: var(--navy-dark); }
-      ::-webkit-scrollbar-thumb { background: #A61A1A; border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: #FF0033; }
-    </style>
 </head>
 <body class="bg-grid antialiased">
     <div id="root"></div>
@@ -151,6 +16,6 @@
       } 
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
