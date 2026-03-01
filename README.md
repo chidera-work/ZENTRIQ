@@ -1,45 +1,20 @@
-# Zentriq Logistics - Netlify Deployment Guide
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-This project is optimized for deployment on [Netlify](https://www.netlify.com/).
+# Run and deploy your AI Studio app
 
-## Prerequisites
+This contains everything you need to run your app locally.
 
-1.  A Netlify account.
-2.  The following environment variables (set them in the Netlify Dashboard under **Site settings > Build & deploy > Environment variables**):
+View your app in AI Studio: https://ai.studio/apps/1d102d5f-c48c-455d-97d7-15914c6faf17
 
-### Build-time Variables (Required for the frontend build)
-*   `GEMINI_API_KEY`: Your Google Gemini API key (used by Vite to bundle into the frontend).
-*   `VITE_SUPABASE_URL`: Your Supabase project URL.
-*   `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key.
+## Run Locally
 
-### Runtime Variables (Required for the backend functions)
-*   `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key.
-*   `RESEND_API_KEY`: Your Resend API key for sending emails.
-*   `VITE_SUPABASE_URL`: (Also needed by the backend).
-*   `VITE_SUPABASE_ANON_KEY`: (Also needed by the backend).
+**Prerequisites:**  Node.js
 
-## Deployment Steps
 
-### Option 1: Netlify CLI (Recommended for fast deployment)
-
-1.  Install Netlify CLI: `npm install -g netlify-cli`
-2.  Login: `netlify login`
-3.  Initialize: `netlify init`
-4.  Deploy: `netlify deploy --build --prod`
-
-### Option 2: Git Integration (Continuous Deployment)
-
-1.  Push your code to a Git repository (GitHub, GitLab, or Bitbucket).
-2.  Connect your repository to Netlify.
-3.  Netlify will automatically detect the `netlify.toml` file and configure the build settings:
-    *   **Build command:** `npm run build`
-    *   **Publish directory:** `dist`
-    *   **Functions directory:** `netlify/functions`
-
-## Architecture
-
-*   **Frontend:** React + Vite (served as static files from `dist`).
-*   **Backend:** Express.js (running as a Netlify Function via `serverless-http`).
-*   **Routing:** 
-    *   `/api/*` is routed to the Netlify Function.
-    *   All other routes are handled by the React SPA.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
