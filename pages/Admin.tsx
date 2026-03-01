@@ -168,9 +168,9 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
         const data = await response.json();
         alert(data.error || "ACCESS_DENIED :: CREDENTIAL_MISMATCH");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      alert("CONNECTION_FAILED :: SERVER_OFFLINE");
+      alert(`CONNECTION_FAILED :: ${error.message || 'SERVER_OFFLINE'}`);
     } finally {
       setIsProcessing(false);
     }
