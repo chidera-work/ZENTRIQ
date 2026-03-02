@@ -168,4 +168,14 @@ app.post('/auth/reset-password', async (c) => {
   }
 });
 
+// Test Env
+app.get('/test-env', async (c) => {
+  return c.json({
+    VITE_SUPABASE_URL: !!c.env.VITE_SUPABASE_URL,
+    VITE_SUPABASE_ANON_KEY: !!c.env.VITE_SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: !!c.env.SUPABASE_SERVICE_ROLE_KEY,
+    RESEND_API_KEY: !!c.env.RESEND_API_KEY
+  });
+});
+
 export const onRequest = handle(app);
