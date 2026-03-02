@@ -4,10 +4,14 @@
   --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
 
-  --color-navy-default: #F1F5F9;
-  --color-navy-dark: #F8FAFC;
-  --color-navy-panel: #FFFFFF;
-  --color-navy-accent: #E2E8F0;
+  --color-navy-default: var(--navy-default);
+  --color-navy-dark: var(--navy-dark);
+  --color-navy-panel: var(--navy-panel);
+  --color-navy-accent: var(--navy-accent);
+  --color-navy-light: var(--navy-accent);
+  
+  --color-main: var(--text-main);
+  --color-muted: var(--text-muted);
   
   --color-apexRed: #A61A1A;
   --color-neonRed: #FF0033;
@@ -28,16 +32,16 @@
 }
 
 .dark {
-  --navy-dark: #020617;
-  --navy-default: #0F172A;
-  --navy-panel: #1E293B;
-  --navy-accent: #172554;
-  --text-main: #F1F5F9;
-  --text-muted: #94A3B8;
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --grid-color: rgba(255, 255, 255, 0.03);
-  --apex-glow: rgba(166, 26, 26, 0.4);
-  --neon-glow: rgba(255, 0, 51, 0.4);
+  --navy-dark: #050505;
+  --navy-default: #0A0A0A;
+  --navy-panel: #111111;
+  --navy-accent: #1A1A1A;
+  --text-main: #FFFFFF;
+  --text-muted: #A1A1AA;
+  --glass-bg: rgba(0, 0, 0, 0.8);
+  --grid-color: rgba(255, 255, 255, 0.05);
+  --apex-glow: rgba(166, 26, 26, 0.6);
+  --neon-glow: rgba(255, 0, 51, 0.6);
 }
 
 body {

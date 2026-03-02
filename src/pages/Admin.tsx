@@ -165,12 +165,17 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
       if (response.ok) {
         setIsAuthenticated(true);
       } else {
-        const data = await response.json();
-        alert(data.error || "ACCESS_DENIED :: CREDENTIAL_MISMATCH");
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          alert(data.error || "ACCESS_DENIED :: CREDENTIAL_MISMATCH");
+        } else {
+          alert(`SERVER_ERROR :: UNEXPECTED_RESPONSE (${response.status})`);
+        }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
-      alert(`CONNECTION_FAILED :: ${error.message || 'SERVER_OFFLINE'}`);
+      alert("CONNECTION_FAILED :: NETWORK_ERROR");
     } finally {
       setIsProcessing(false);
     }
@@ -187,16 +192,23 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
         body: JSON.stringify({ email: email.toLowerCase() }),
       });
 
-      const data = await response.json();
-      
+      const contentType = response.headers.get("content-type");
       if (response.ok) {
-        if (data.simulated && data.code) {
-          console.log("SIMULATED_CODE:", data.code);
-          alert(`SIMULATION_MODE: Code is ${data.code} (Check console for real apps)`);
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.simulated && data.code) {
+            console.log("SIMULATED_CODE:", data.code);
+            alert(`SIMULATION_MODE: Code is ${data.code} (Check console for real apps)`);
+          }
         }
         setLoginView('VERIFY');
       } else {
-        alert(`TRANSMISSION_FAILED :: ${data.error || 'UNKNOWN_ERROR'}`);
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          alert(`TRANSMISSION_FAILED :: ${data.error || 'UNKNOWN_ERROR'}`);
+        } else {
+          alert(`TRANSMISSION_FAILED :: SERVER_ERROR (${response.status})`);
+        }
       }
     } catch (error) {
       console.error("Forgot password error:", error);
@@ -219,8 +231,13 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
       if (response.ok) {
         setLoginView('RESET');
       } else {
-        const data = await response.json();
-        alert(`VERIFICATION_FAILED :: ${data.error || 'INVALID_CODE'}`);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          alert(`VERIFICATION_FAILED :: ${data.error || 'INVALID_CODE'}`);
+        } else {
+          alert(`VERIFICATION_FAILED :: SERVER_ERROR (${response.status})`);
+        }
       }
     } catch (error) {
       alert("VERIFICATION_FAILED :: NETWORK_ERROR");
@@ -250,8 +267,13 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
       if (response.ok) {
         setLoginView('SENT');
       } else {
-        const data = await response.json();
-        alert(`RESET_FAILED :: ${data.error || 'UNKNOWN_ERROR'}`);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          alert(`RESET_FAILED :: ${data.error || 'UNKNOWN_ERROR'}`);
+        } else {
+          alert(`RESET_FAILED :: SERVER_ERROR (${response.status})`);
+        }
       }
     } catch (error) {
       alert("RESET_FAILED :: NETWORK_ERROR");
