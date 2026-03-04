@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.json());
 
 // API Routes
+app.get("/api/auth/login", (req, res) => {
+  res.json({ message: "POST_ONLY :: Use POST protocol to establish link." });
+});
+
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
   

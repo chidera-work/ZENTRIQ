@@ -24,6 +24,10 @@ const getSupabase = (env: Bindings) => {
 };
 
 // Auth Login
+app.get('/auth/login', (c) => {
+  return c.json({ message: "POST_ONLY :: Use POST protocol to establish link." });
+});
+
 app.post('/auth/login', async (c) => {
   const { email, password } = await c.req.json();
   const supabase = getSupabase(c.env);
@@ -236,6 +240,15 @@ app.get('/test-env', async (c) => {
     SUPABASE_SERVICE_ROLE_KEY: !!c.env.SUPABASE_SERVICE_ROLE_KEY,
     RESEND_API_KEY: !!c.env.RESEND_API_KEY
   });
+});
+
+app.all('*', (c) => {
+  return c.json({ 
+    error: "ROUTE_NOT_FOUND", 
+    path: c.req.path,
+    method: c.req.method,
+    url: c.req.url
+  }, 404);
 });
 
 export const onRequest = handle(app);
