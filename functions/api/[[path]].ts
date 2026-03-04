@@ -11,7 +11,7 @@ type Bindings = {
   RESEND_API_KEY: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Bindings }>({ strict: false });
 
 // Enable CORS for all routes
 app.use('*', cors());
