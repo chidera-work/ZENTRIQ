@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/cloudflare-pages';
+import { cors } from 'hono/cors';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
@@ -10,7 +11,10 @@ type Bindings = {
   RESEND_API_KEY: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>().basePath('/api');
+const app = new Hono<{ Bindings: Bindings }>();
+
+// Enable CORS for all routes
+app.use('*', cors());
 
 // Helper to get Supabase client
 const getSupabase = (env: Bindings) => {
@@ -25,6 +29,28 @@ app.post('/auth/login', async (c) => {
   const supabase = getSupabase(c.env);
   
   try {
+    // Check if any admins exist at all
+    const { count, error: countError } = await supabase
+      .from('admins')
+      .select('*', { count: 'exact', head: true });
+
+    if (countError) {
+      if (countError.code === '42P01') { // Table not found
+        return c.json({ 
+          error: "DATABASE_NOT_READY", 
+          message: "The 'admins' table does not exist in your Supabase database. Please create it first." 
+        }, 503);
+      }
+      throw countError;
+    }
+
+    if (count === 0) {
+      return c.json({ 
+        error: "NO_ADMINS_FOUND", 
+        message: "The system has no administrator accounts. Please use the setup protocol." 
+      }, 412); // Precondition Failed
+    }
+
     const { data: admin, error } = await supabase
       .from('admins')
       .select('*')
@@ -37,7 +63,41 @@ app.post('/auth/login', async (c) => {
       return c.json({ error: "ACCESS_DENIED :: CREDENTIAL_MISMATCH" }, 401);
     }
   } catch (err) {
-    return c.json({ error: "SERVER_ERROR" }, 500);
+    console.error("Login error:", err);
+    return c.json({ error: "SERVER_ERROR", details: err instanceof Error ? err.message : String(err) }, 500);
+  }
+});
+
+// Bootstrap Admin (Only works if no admins exist)
+app.post('/auth/setup', async (c) => {
+  const { email, password, secretKey } = await c.req.json();
+  const supabase = getSupabase(c.env);
+
+  // Simple security check to prevent unauthorized setup if already initialized
+  const { count, error: countError } = await supabase
+    .from('admins')
+    .select('*', { count: 'exact', head: true });
+
+  if (countError && countError.code === '42P01') {
+    return c.json({ 
+      error: "DATABASE_NOT_READY", 
+      message: "The 'admins' table does not exist in your Supabase database. Please create it first." 
+    }, 503);
+  }
+
+  if (count && count > 0) {
+    return c.json({ error: "SYSTEM_ALREADY_INITIALIZED" }, 403);
+  }
+
+  try {
+    const { error } = await supabase
+      .from('admins')
+      .insert([{ email: email.toLowerCase(), password }]);
+
+    if (error) throw error;
+    return c.json({ success: true, message: "ADMIN_NODE_ESTABLISHED" });
+  } catch (err) {
+    return c.json({ error: "SETUP_FAILURE", details: err instanceof Error ? err.message : String(err) }, 500);
   }
 });
 

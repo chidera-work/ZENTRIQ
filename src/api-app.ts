@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,6 +9,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SU
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // API Routes

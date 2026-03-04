@@ -20,7 +20,7 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loginView, setLoginView] = useState<'LOGIN' | 'FORGOT' | 'VERIFY' | 'RESET' | 'SENT'>('LOGIN');
+  const [loginView, setLoginView] = useState<'LOGIN' | 'FORGOT' | 'VERIFY' | 'RESET' | 'SENT' | 'SETUP'>('LOGIN');
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -73,6 +73,16 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
       }
     }
   }, [shipments]);
+
+  useEffect(() => {
+    // Diagnostic check for environment variables
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || supabaseUrl.includes('placeholder') || !supabaseKey || supabaseKey === 'placeholder') {
+      console.warn("DIAGNOSTIC_ALERT :: Supabase environment variables are missing or using placeholders.");
+    }
+  }, []);
 
   const filteredShipments = useMemo(() => {
     return shipments.filter(s => {
@@ -168,14 +178,19 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const data = await response.json();
-          alert(data.error || "ACCESS_DENIED :: CREDENTIAL_MISMATCH");
+          if (data.error === 'NO_ADMINS_FOUND') {
+            alert("SYSTEM_NOT_INITIALIZED :: No administrator accounts found. Redirecting to setup protocol.");
+            setLoginView('SETUP');
+          } else {
+            alert(data.message || data.error || "ACCESS_DENIED :: CREDENTIAL_MISMATCH");
+          }
         } else {
           alert(`SERVER_ERROR :: UNEXPECTED_RESPONSE (${response.status})`);
         }
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("CONNECTION_FAILED :: NETWORK_ERROR");
+      alert("CONNECTION_FAILED :: The API endpoint could not be reached. Ensure your Cloudflare Functions are deployed and VITE_ environment variables are correctly set.");
     } finally {
       setIsProcessing(false);
     }
@@ -277,6 +292,36 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
       }
     } catch (error) {
       alert("RESET_FAILED :: NETWORK_ERROR");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSetup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      alert("PROTOCOL_ERROR :: PASSWORDS_DO_NOT_MATCH");
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      const response = await fetch('/api/auth/setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.toLowerCase(), password }),
+      });
+
+      if (response.ok) {
+        alert("ADMIN_NODE_ESTABLISHED :: You may now login.");
+        setLoginView('LOGIN');
+        setPassword('');
+        setConfirmPassword('');
+      } else {
+        const data = await response.json();
+        alert(`SETUP_FAILED :: ${data.error || 'UNKNOWN_ERROR'}`);
+      }
+    } catch (error) {
+      alert("SETUP_FAILED :: NETWORK_ERROR");
     } finally {
       setIsProcessing(false);
     }
@@ -553,7 +598,33 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
                   </button>
                 </form>
               </div>
-            ) : (
+            ) : loginView === 'SETUP' ? (
+              <div className="animate-fade-in">
+                <h2 className="text-main font-black uppercase tracking-[0.4em] text-[9px] md:text-xs mb-6 md:mb-8">System Initialization</h2>
+                <p className="text-muted text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-6 md:mb-8 leading-relaxed px-2">No administrator found. Establish the primary command node.</p>
+                <form onSubmit={handleSetup} className="space-y-4 md:space-y-6">
+                  <div className="relative group">
+                     <i className="fa-solid fa-envelope absolute left-5 md:left-6 top-1/2 -translate-y-1/2 text-main/20 group-focus-within:text-apexRed transition-colors"></i>
+                     <input required type="email" placeholder="PRIMARY_ADMIN_ID" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-navy-dark border border-main/10 rounded-xl md:rounded-2xl py-4 md:py-5 pl-14 md:pl-16 pr-6 text-main outline-none uppercase font-black text-[10px] md:text-xs tracking-widest focus:border-apexRed transition-all" />
+                  </div>
+                  <div className="relative group">
+                     <i className="fa-solid fa-lock absolute left-5 md:left-6 top-1/2 -translate-y-1/2 text-main/20 group-focus-within:text-apexRed transition-colors"></i>
+                     <input required type="password" placeholder="NEW_ACCESS_KEY" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-navy-dark border border-main/10 rounded-xl md:rounded-2xl py-4 md:py-5 pl-14 md:pl-16 pr-6 text-main outline-none font-black text-[10px] md:text-xs tracking-widest focus:border-apexRed transition-all" />
+                  </div>
+                  <div className="relative group">
+                     <i className="fa-solid fa-lock-open absolute left-5 md:left-6 top-1/2 -translate-y-1/2 text-main/20 group-focus-within:text-apexRed transition-colors"></i>
+                     <input required type="password" placeholder="CONFIRM_ACCESS_KEY" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="w-full bg-navy-dark border border-main/10 rounded-xl md:rounded-2xl py-4 md:py-5 pl-14 md:pl-16 pr-6 text-main outline-none font-black text-[10px] md:text-xs tracking-widest focus:border-apexRed transition-all" />
+                  </div>
+                  <button 
+                    disabled={isProcessing}
+                    className="w-full bg-apexRed text-white py-5 md:py-6 rounded-xl md:rounded-2xl font-black uppercase tracking-[0.4em] text-[9px] md:text-[10px] shadow-apex hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                  >
+                    {isProcessing ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-rocket"></i>}
+                    {isProcessing ? 'Initializing...' : 'Initialize System'}
+                  </button>
+                </form>
+              </div>
+            ) : loginView === 'SENT' ? (
               <div className="animate-reveal">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 border border-green-500/30">
                   <i className="fa-solid fa-shield-check text-green-500"></i>
@@ -567,7 +638,7 @@ const Admin: React.FC<AdminProps> = ({ shipments, onSave, onDelete }) => {
                   Back to Terminal
                 </button>
               </div>
-            )}
+            ) : null}
             <p className="mt-8 text-[7px] md:text-[8px] font-mono text-muted/20 uppercase tracking-widest">Secured by Zentriq Cipher-8</p>
           </div>
         </div>
