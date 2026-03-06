@@ -94,7 +94,7 @@ const Contact: React.FC = () => {
               <div>
                 <h4 className="text-main font-black text-lg md:text-xl mb-1 tracking-tight">Digital Command Nexus</h4>
                 <p className="text-muted text-xs md:text-sm font-medium">Direct tactical uplink for all mission inquiries.</p>
-                <a href="mailto:support@zentriq.com" className="text-apexRed font-black mt-2 tracking-widest text-xs md:text-sm hover:underline">support@zentriq.com</a>
+                <a href="mailto:support@zentriqlogistics.com" className="text-apexRed font-black mt-2 tracking-widest text-xs md:text-sm hover:underline">support@zentriqlogistics.com</a>
               </div>
             </div>
           </div>

@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
                 <div className="w-8 h-8 rounded-lg bg-apexRed/10 flex items-center justify-center text-apexRed">
                   <i className="fa-solid fa-envelope text-xs"></i>
                 </div>
-                <a href="mailto:support@zentriq.com" className="hover:text-apexRed transition-colors">support@zentriq.com</a>
+                <a href="mailto:support@zentriqlogistics.com" className="hover:text-apexRed transition-colors">support@zentriqlogistics.com</a>
               </li>
             </ul>
           </div>
